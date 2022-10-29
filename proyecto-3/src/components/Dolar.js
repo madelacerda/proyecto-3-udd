@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { LineChart } from "./Grafico";
-import { UserData } from "./Data";
+
 
 const getAPI = async (url) => {
   const res = await axios.get(url);
@@ -11,26 +11,26 @@ const getAPI = async (url) => {
 let tasasArray = [];
 let fechasArray = [];
 let nombre = "";
+let tasasArrayReverse=[];
+let fechasArrayReverse=[];
 
 getAPI("https://mindicador.cl/api/dolar/").then((data) => {
   nombre = data.nombre;
-
   let tasas = data.serie;
-  console.log(tasas);
   tasasArray = tasas.map((serie) => serie.valor);
+  tasasArrayReverse = tasasArray.reverse();
   fechasArray = tasas.map((serie) => serie.fecha.split("T")[0]);
-  console.log(tasasArray);
-  console.log(fechasArray);
-  console.log(nombre);
+  fechasArrayReverse = fechasArray.reverse();
+  console.log(tasasArrayReverse);
 });
 
 function Dolar() {
   const [userData, setUserData] = useState({
-    labels: fechasArray,
+    labels: fechasArrayReverse,
     datasets: [
       {
         label: nombre,
-        data: tasasArray,
+        data: tasasArrayReverse,
         backgroundColor: [
           "rgba(75,192,192,1)",
           "#ecf0f1",
@@ -45,7 +45,8 @@ function Dolar() {
   });
 
   return (
-    <div>
+    <div className="container">
+        <h2>{nombre}</h2>
       {/* <Grafico chartData={tasasArray} nombre={nombre} fechasArray={fechasArray} /> */}
       <LineChart chartData={userData} />
     </div>
